@@ -1,0 +1,6 @@
+fix-cmsnamed-alignment-issue.patch
+update-manpages.patch
+prepare-for-libtoolizing.patch
+sanity-check-profiles-CVE-2014-0459.patch
+fix-unaligned-access.patch
+endianness-verification-fix-powerpc.patch

@@ -1,0 +1,665 @@
+Description: Update manpages to 2.5 release
+Author: Thomas Weber <tweber@debian.org>
+Bug-Debian: https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=742587
+Forwarded: yes
+---
+This patch header follows DEP-3: http://dep.debian.net/deps/dep3/
+--- a/utils/tificc/tificc.1
++++ b/utils/tificc/tificc.1
+@@ -1,25 +1,29 @@
+ .\"Shiju P. Nair September 30, 2004
+-.TH TIFFICC 1 "October 23, 2004"
+-.SH NAME 
+-tifficc - little cms ICC profile applier for TIFF.
++.\"Thomas Weber <tweber@debian.org> April 23, 2014
++.TH TIFICC 1 "October 23, 2004"
++.SH NAME
++tificc - little cms ICC profile applier for TIFF.
+ .SH SYNOPSIS
+-.B tifficc
++.B tificc
+ .RI [ options ] " input.tif output.tif"
+ .SH DESCRIPTION
+ lcms is a standalone CMM engine, which deals with the color management.
+ It implements a fast transformation between ICC profiles.
+-.B tifficc 
+-is little cms ICC profile applier for TIFF.
++.B tificc
++is a little cms ICC profile applier for TIFF.
+ .SH OPTIONS
+ .TP
+ .B \-a
+ Handle channels > 4 as alpha.
+ .TP
+-.B \-b 
++.B \-b
+ Black point compensation.
+ .TP
+-.B \-c <0,1,2,3>
+-Precalculates transform. (0=Off, 1=Normal, 2=Hi-res, 3=LoRes) [defaults to 1]
++.BI \-c\  NUM
++Precalculates transform (0=Off, 1=Normal, 2=Hi-res, 3=LoRes) [defaults to 1].
++.TP
++.BI \-d\  NUM
++Observer adaptation state (abs.col. only), (0..1.0, float value) [defaults to 0.0].
+ .TP
+ .B \-e
+ Embed destination profile.
+@@ -27,74 +31,87 @@
+ .B \-g
+ Marks out-of-gamut colors on softproof.
+ .TP
+-.B \-h <0,1,2>
+-Show summary of options and examples.
++.BI \-h\  NUM
++Show summary of options and examples (0=help, 1=Examples, 2=Built-in profiles, 3=Contact information)
+ .TP
+ .BI \-i\ profile
+ Input profile (defaults to sRGB).
+ .TP
+-.B -k <0..400> 
+-Ink-limiting in % (CMYK only).
++.BI \-k\  inklimit
++Ink-limiting in % (CMYK only), (0..400.0, float value) [default 400.0].
+ .TP
+ .BI \-l\ profile
+ Transform by device-link profile.
+ .TP
+-.B \-m <0,1,2,3>
+-SoftProof intent.
++.B \-m TODO: check if values outside 0..3 are possible
++SoftProof intent [defaults to 0].
+ .TP
+ .B \-n
+ Ignore embedded profile on input.
+ .TP
+-.BI \-p\  profile
+-Soft proof profile.
+-.TP
+ .BI \-o\  profile
+-.p
+ Output profile (defaults to sRGB).
+ .TP
+-.BI \-s\  profile
+-Save embedded profile as <new profile>
++.BI \-p\  profile
++Soft proof profile.
++.TP
++.BI \-s\  newprofile
++Save embedded profile as \fInewprofile\fR.
+ .TP
+-.B \-t <0,1,2,3>
+-Intent (0=Perceptual, 1=Colorimetric, 2=Saturation, 3=Absolute).
++.BI \-t\ NUM
++Rendering intent
++.nf
++.RS
++0=Perceptual [default]
++1=Relative colorimetric
++2=Saturation
++3=Absolute colorimetric
++10=Perceptual preserving black ink
++11=Relative colorimetric preserving black ink
++12=Saturation preserving black ink
++13=Perceptual preserving black plane
++14=Relative colorimetric preserving black plane
++15=Saturation preserving black plane
++.RE
++.fi
+ .TP
+ .B \-v
+ Verbose.
+ .TP
+-.B \-w
+-Wide output (generates 16 bps tiff).
+-.TP
+-You can also use following builtins 
+-*Lab - CIE Lab D50 based 
+-*XYZ - XYZ 
+-*adobe1998RBB - AdobeRGB
+-*colormatchrgb - ColorMatch RGB
+-*applergb - Apple RGB
++.BI \-w\  NUM
++Output depth (8, 16 or 32). Use 32 for floating-point.
++.SH BUILT-IN PROFILES
++.nf
++	*Lab2  -- D50-based v2 CIEL*a*b
++	*Lab4  -- D50-based v4 CIEL*a*b
++	*Lab   -- D50-based v4 CIEL*a*b
++	*XYZ   -- CIE XYZ (PCS)
++	*sRGB  -- sRGB color space
++	*Gray22 - Monochrome of Gamma 2.2
++	*Gray30 - Monochrome of Gamma 3.0
++	*null   - Monochrome black for all input
++	*Lin2222- CMYK linearization of gamma 2.2 on each channel
++.fi
+ .SH EXAMPLES
+ .nf
+ To color correct from scanner to sRGB:
+-	tifficc -iscanner.icm in.tif out.tif
+-
++	tificc -iscanner.icm in.tif out.tif
+ To convert from monitor1 to monitor2:
+-	tifficc -imon1.icm -omon2.icm in.tif out.tif
+-	
++	tificc -imon1.icm -omon2.icm in.tif out.tif
+ To make a CMYK separation:
+-	tifficc -oprinter.icm inrgb.tif outcmyk.tif
+-	
++	tificc -oprinter.icm inrgb.tif outcmyk.tif
+ To recover sRGB from a CMYK separation:
+-	tifficc -iprinter.icm incmyk.tif outrgb.tif
+-
++	tificc -iprinter.icm incmyk.tif outrgb.tif
+ To convert from CIELab TIFF to sRGB
+-	tifficc -iTiffLab8Spac.icm in.tif out.tif
+-.fi				
++	tificc -i*Lab in.tif out.tif
++.fi
+ .SH NOTES
+ For suggestions, comments, bug reports etc. send mail to info@littlecms.com.
+ .SH SEE ALSO
+-.BR jpegicc (1),
+-.BR icc2ps (1),
+-.BR icclink (1),
+-.BR icctrans (1),
+-.BR wtpt (1)
++.BR jpgicc (1),
++.BR linkicc (1),
++.BR psicc (1),
++.BR transicc (1)
+ .SH AUTHOR
+ This manual page was originally written by Shiju p. Nair <shiju.p@gmail.com>,
+ for the Debian project. Modified by Marti Maria to reflect further changes.
+--- a/utils/jpgicc/jpgicc.1
++++ b/utils/jpgicc/jpgicc.1
+@@ -1,79 +1,122 @@
+ .\"Shiju P. Nair September 30, 2004
+-.TH JPEGICC 1 "September 30, 2004"
++.\"Thomas Weber <tweber@debian.org> April 23, 2014
++.TH JPGICC 1 "September 30, 2004"
+ .SH NAME
+-jpegicc - little cms ICC profile applier for JPEG.
++jpgicc - little cms ICC profile applier for JPEG.
+ .SH SYNOPSIS
+-.B jpegicc
++.B jpgicc
+ .RI [ options ] " input.jpg output.jpg"
+ .SH DESCRIPTION
+ lcms is a standalone CMM engine, which deals with the color management.
+ It implements a fast transformation between ICC profiles.
+-.B jpegicc 
+-is little cms ICC profile applier for JPEG.
++.B jpgicc
++is a little cms ICC profile applier for JPEG.
+ .SH OPTIONS
+ .TP
+-.B \-b 
++.B \-b
+ Black point compensation.
+-.TP 
+-.B \-c <0,1,2,3>
+-Precalculates transform. (0=Off, 1=Normal, 2=Hi-res, 3=LoRes) [defaults to 1]
++.TP
++.BI \-c\  NUM
++Precalculates transform (0=Off, 1=Normal, 2=Hi-res, 3=LoRes) [defaults to 1].
++.TP
++.BI \-d\  NUM
++Observer adaptation state (abs.col. only), (0..1.0, float value) [defaults to 0.0].
++.TP
++.B \-e
++Embed destination profile.
+ .TP
+ .B \-g
+ Marks out-of-gamut colors on softproof.
+ .TP
+-.B \-h <0,1,2>
+-Show summary of options and examples.
++.BI \-h\  NUM
++Show summary of options and examples (0=help, 1=Examples, 2=Built-in profiles, 3=Contact information)
+ .TP
+ .BI \-i\  profile
+ Input profile (defaults to sRGB).
+ .TP
+-.B \-m <0,1,2,3>
+-SoftProof intent.
++.BI \-l\  link
++TODO: explain this option.
++.TP
++.BI \-m\  NUM
++SoftProof intent (0,1,2,3) [defaults to 0].
+ .TP
+ .B \-n
+ Ignore embedded profile.
+ .TP
+-.BI \-p\  profile
+-Soft proof profile
+-.TP
+ .BI \-o\  profile
+-.p
+ Output profile (defaults to sRGB).
+ .TP
+-.B \-q <0..100>
+-Output JPEG quality.
++.BI \-p\  profile
++Soft proof profile.
++.TP
++.BI \-q\  NUM
++Output JPEG quality, (0..100) [defaults to 75].
+ .TP
+-.B \-t <0,1,2,3>
+-Intent (0=Perceptual, 1=Colorimetric, 2=Saturation, 3=Absolute).
++.BI \-s\  newprofile
++Save embedded profile as \fInewprofile\fR.
++.TP
++.BI \-t\ NUM
++Rendering intent
++.nf
++.RS
++0=Perceptual [default]
++1=Relative colorimetric
++2=Saturation
++3=Absolute colorimetric
++10=Perceptual preserving black ink
++11=Relative colorimetric preserving black ink
++12=Saturation preserving black ink
++13=Perceptual preserving black plane
++14=Relative colorimetric preserving black plane
++15=Saturation preserving black plane
++.RE
++.fi
+ .TP
+ .B \-v
+ Verbose.
++.TP
++.BI \-!\  NUM,NUM,NUM
++Out-of-gamut marker channel values (r,g,b) [defaults: 128,128,128].
++.SH BUILT-IN PROFILES
++.nf
++	*Lab2  -- D50-based v2 CIEL*a*b
++	*Lab4  -- D50-based v4 CIEL*a*b
++	*Lab   -- D50-based v4 CIEL*a*b
++	*XYZ   -- CIE XYZ (PCS)
++	*sRGB  -- sRGB color space
++	*Gray22 - Monochrome of Gamma 2.2
++	*Gray30 - Monochrome of Gamma 3.0
++	*null   - Monochrome black for all input
++	*Lin2222- CMYK linearization of gamma 2.2 on each channel
++.fi
+ .SH EXAMPLES
+ .nf
+ To color correct from scanner to sRGB:
+-	jpegicc -iscanner.icm in.jpg out.jpg
+-	
++	jpgicc -iscanner.icm in.jpg out.jpg
++
+ To convert from monitor1 to monitor2:
+-	jpegicc -imon1.icm -omon2.icm in.jpg out.jpg
++	jpgicc -imon1.icm -omon2.icm in.jpg out.jpg
+ 
+ To make a CMYK separation:
+-	jpegicc -oprinter.icm inrgb.jpg outcmyk.jpg
++	jpgicc -oprinter.icm inrgb.jpg outcmyk.jpg
+ 
+ To recover sRGB from a CMYK separation:
+-	jpegicc -iprinter.icm incmyk.jpg outrgb.jpg
++	jpgicc -iprinter.icm incmyk.jpg outrgb.jpg
++
++To convert from CIELab ITU/Fax JPEG to sRGB
++	jpgicc -iitufax.icm in.jpg out.jpg
+ 
+ To convert from CIELab ITU/Fax JPEG to sRGB
+-	jpegicc -iitufax.icm in.jpg out.jpg
+-.fi	
++	jpgicc in.jpg out.jpg
++.fi
+ .SH NOTES
+ For suggestions, comments, bug reports etc. send mail to
+ info@littlecms.com.
+ .SH SEE ALSO
+-.BR tifficc (1),
+-.BR icc2ps (1),
+-.BR icclink (1),
+-.BR icctrans (1),
+-.BR wtpt (1)
++.BR linkicc (1),
++.BR psicc (1),
++.BR tificc (1),
++.BR transicc (1)
+ .SH AUTHOR
+ This manual page was written by Shiju p. Nair <shiju.p@gmail.com>,
+ for the Debian project.
+--- a/utils/linkicc/linkicc.1
++++ b/utils/linkicc/linkicc.1
+@@ -1,90 +1,123 @@
+ .\"Shiju P. Nair September 30, 2004
+-.TH ICCLINK 1 "September 30, 2004"
++.\"Thomas Weber <tweber@debian.org> April 23, 2014
++.TH LINKICC 1 "September 30, 2004"
+ .SH NAME
+-icclink - little cms device link generator.
++linkicc - little cms device link generator.
+ .SH SYNOPSIS
+-.B icclink
+-.RI [ options ] " <profiles>"
++.B linkicc
++.RI [ options ] " profiles"
+ .SH DESCRIPTION
+ lcms is a standalone CMM engine, which deals with the color management.
+ It implements a fast transformation between ICC profiles.
+-.B icclink 
+-is little cms device link generator.
++.B linkicc
++is a little cms device link generator.
+ .P
+ Links two or more profiles into a single devicelink profile.
+ Colorspaces must be paired except Lab/XYZ, that can be interchanged.
+ .SH OPTIONS
+ .TP
+-.B \-8
+-Creates 8-bit devicelink.
++.BR \-a\  NUM
++Observer adaptation state (abs.col. only), (0..1.0, float value) [defaults to 1.0].
+ .TP
+-.B \-b 
++.B \-b
+ Black point compensation.
+ .TP
+-.B \-c <0,1,2,3>
+-Precision (0=LowRes, 1=Normal, 2=Hi-res). [defaults to 1]
++.BI \-c\  precision
++Precision (0=LowRes, 1=Normal, 2=Hi-res) [defaults to 1].
+ .TP
+ .BI \-d\  description
+ Description text (quotes can be used).
+ .TP
+-.B \-h <0,1,2,3>
+-Show summary of options and examples.
++.BI \-h\  NUM
++Show summary of options and examples (0=help, 1=Built-in profiles, 2=Examples, 3=Contact information)
++.TP
++.BI \-k\  inklimit
++Ink-limiting in % (CMYK only), (0..400.0, float value) [default 400.0].
+ .TP
+-.BI \-i\  profile
+-Input profile (defaults to sRGB).
++.B \-l
++Use linearization curves (may affect accuracy).
+ .TP
+-.B -k <0..400> 
+-Ink-limiting in % (CMYK only)
++.BI \-n\  gridpoints
++Alternate way to set precision, number of CLUT points.
+ .TP
+ .BI \-o\  profile
+-Output devicelink profile. [defaults to 'devicelink.icm']
++Output devicelink profile [defaults to 'devicelink.icm'].
++.TP
++.BI \-r\  profileversion
++Profile version. (CAUTION: may change the profile implementation), (2.0..4.3, float value) [defaults to 4.3].
++.TP
++.BI \-t\  NUM
++Rendering intent
++.nf
++.RS
++0=Perceptual [default]
++1=Relative colorimetric
++2=Saturation
++3=Absolute colorimetric
++10=Perceptual preserving black ink
++11=Relative colorimetric preserving black ink
++12=Saturation preserving black ink
++13=Perceptual preserving black plane
++14=Relative colorimetric preserving black plane
++15=Saturation preserving black plane
++.RE
++.fi
+ .TP
+-.B \-t <0,1,2,3>
+-Intent (0=Perceptual, 1=Colorimetric, 2=Saturation, 3=Absolute).
++.BI \-v\  verbosity
++Verbosity level, (0=None, 1=Normal, 2=High, 3=Very High) [defaults to 0].
+ .TP
+-.B \-x 
++.B \-x
+ Creatively, guess deviceclass of resulting profile.
+ .TP
++.BI \-y\  copyright
++Copyright notice (quotes can be used) ["No copyright, use freely"].
++.TP
++.B \-8
++Creates 8-bit devicelink.
++.SH BUILT-IN PROFILES
+ .nf
+-Built-in profiles:
+-	*Lab  -- D50-based CIEL*a*b (PCS)
+-	*XYZ  -- CIE XYZ (PCS)
+-	*sRGB -- sRGB color space
+-	*Gray22- Monochrome of Gamma 2.2
++	*Lab2  -- D50-based v2 CIEL*a*b
++	*Lab4  -- D50-based v4 CIEL*a*b
++	*Lab   -- D50-based v4 CIEL*a*b
++	*XYZ   -- CIE XYZ (PCS)
++	*sRGB  -- sRGB color space
++	*Gray22 - Monochrome of Gamma 2.2
++	*Gray30 - Monochrome of Gamma 3.0
++	*null   - Monochrome black for all input
+ 	*Lin2222- CMYK linearization of gamma 2.2 on each channel
+-.fi					
++.fi
+ .SH EXAMPLES
+ .nf
+ To create 'devicelink.icm' from a.icc to b.icc:
+-	icclink a.icc b.icc
++	linkicc a.icc b.icc
+ 
+ To create 'out.icc' from sRGB to cmyk.icc:
+-	icclink -o out.icc *sRGB cmyk.icc
++	linkicc -o out.icc *sRGB cmyk.icc
+ 
+ To create a sRGB input profile working in Lab:
+-	icclink -x -o sRGBLab.icc *sRGB *Lab
++	linkicc -x -o sRGBLab.icc *sRGB *Lab
+ 
+ To create a XYZ -> sRGB output profile:
+-	icclink -x -o sRGBLab.icc *XYZ *sRGB
++	linkicc -x -o sRGBLab.icc *XYZ *sRGB
+ 
+ To create a abstract profile doing softproof for cmyk.icc:
+-	icclink -t1 -x -o softproof.icc *Lab cmyk.icc cmyk.icc *Lab
++	linkicc -t1 -x -o softproof.icc *Lab cmyk.icc cmyk.icc *Lab
+ 
+ To create a 'grayer' sRGB input profile:
+-	icclink -x -o grayer.icc *sRGB gray.icc gray.icc *Lab
++	linkicc -x -o grayer.icc *sRGB gray.icc gray.icc *Lab
+ 
+ To embed ink limiting into a cmyk output profile:
+-	icclink -x -o cmyklimited.icc -k 250 cmyk.icc *Lab
++	linkicc -x -o cmyklimited.icc -k 250 cmyk.icc *Lab
++
+ .fi
+ .SH NOTES
+ For suggestions, comments, bug reports etc. send mail to
+ info@littlecms.com.
+ .SH SEE ALSO
+-.BR jpegicc (1),
+-.BR tifficc (1),
+-.BR icc2ps (1),
+-.BR icctrans (1),
+-.BR wtpt (1)
++.BR jpgicc (1),
++.BR psicc (1),
++.BR tificc (1),
++.BR transicc (1)
+ .SH AUTHOR
+ This manual page was written by Shiju p. Nair <shiju.p@gmail.com>,
+ for the Debian project.
+--- a/utils/psicc/psicc.1
++++ b/utils/psicc/psicc.1
+@@ -1,41 +1,47 @@
+ .\"Shiju P. Nair September 30, 2004
+-.TH ICC2PS 1 "September 30, 2004"
++.\"Thomas Weber <tweber@debian.org> April 23, 2014
++.TH PSICC 1 "September 30, 2004"
+ .SH NAME
+-icc2ps - little cms PostScript converter.
++psicc - little cms PostScript converter.
+ .SH SYNOPSIS
+-.B icc2ps
++.B psicc
+ .RI [ options ]
+ .SH DESCRIPTION
+ lcms is a standalone CMM engine, which deals with the color management.
+ It implements a fast transformation between ICC profiles.
+-.B icc2ps 
+-is little cms PostScript converter.
++.B psicc
++is a little cms PostScript converter.
+ .SH OPTIONS
+ .TP
+-.B \-b 
++.B \-b
+ Black point compensation (CRD only).
+ .TP
++.BI \-c\  precision
++Precision (0=LowRes, 1=Normal, 2=Hi-res) (CRD only) [defaults to 1].
++.TP
+ .BI \-i\  profile
+ Input profile: Generates Color Space Array (CSA).
+ .TP
++.BI \-n\  gridpoints
++Alternate way to set precision, number of CLUT points (CRD only).
++.TP
+ .BI \-o\  profile
+ .p
+ Output profile: Generates Color Rendering Dictionary(CRD).
+ .TP
+-.B \-t <0,1,2,3>
+-Intent (0=Perceptual, 1=Colorimetric, 2=Saturation, 3=Absolute).
++.BI \-t\  intent
++Intent (0=Perceptual, 1=Colorimetric, 2=Saturation, 3=Absolute) [defaults to 0].
+ .TP
+-.B \-u 
++.B \-u
+ Do NOT generate resource name on CRD.
+ .SH NOTES
+ For suggestions, comments, bug reports etc. send mail to
+ info@littlecms.com.
+ .SH SEE ALSO
+-.BR jpegicc (1),
+-.BR tifficc (1),
+-.BR icclink (1),
+-.BR icctrans (1),
+-.BR wtpt (1)
++.BR jpgicc (1),
++.BR linkicc (1),
++.BR tificc (1),
++.BR transicc (1)
+ .SH AUTHOR
+ This manual page was written by Shiju p. Nair <shiju.p@gmail.com>,
+ for the Debian project.
+--- a/utils/transicc/transicc.1
++++ b/utils/transicc/transicc.1
+@@ -1,25 +1,32 @@
+ .\"Shiju P. Nair September 30, 2004
++.\"Thomas Weber <tweber@debian.org> April 23, 2014
+ .TH TRANSICC 1 "MAY 30, 2011"
+ .SH NAME
+-icctrans - little cms ColorSpace conversion calculator.
++transicc - little cms ColorSpace conversion calculator.
+ .SH SYNOPSIS
+-.B icctrans
+-.RI [ options ]
++.B transicc
++.RI [ options ]\ [ CGATSINPUT ]\ [ CGATSOUTPUT ]
+ .SH DESCRIPTION
+ lcms is a standalone CMM engine, which deals with the color management.
+ It implements a fast transformation between ICC profiles.
+-.B icctrans 
+-is lcms ColorSpace conversion calculator.
++.B transicc
++is a lcms ColorSpace conversion calculator.
+ .SH OPTIONS
+ .TP
+-.B \-%
+-use percent % of ink.
+-.TP
+-.B \-b 
++.B \-b
+ Black point compensation.
+ .TP
+-.B \-c <0,1,2,3>
+-Precalculates transform. (0=Off, 1=Normal, 2=Hi-res, 3=LoRes) [defaults to 1]
++.BI \-c\  NUM
++Precalculates transform (0=Off, 1=Normal, 2=Hi-res, 3=LoRes) [defaults to 1].
++.TP
++.BI \-d\  NUM
++Observer adaptation state (abs.col. only), (0..1.0, float value) [defaults to 0.0].
++.TP
++.B \-e
++Encoded representation of numbers is not float (Option \fB\-w\fR=use 16 bits, Option \fB\-x\fR=hexadecimal).
++.TP
++.B \-g
++Marks out-of-gamut colors on softproof.
+ .TP
+ .BI \-i\  profile
+ Input profile (defaults to sRGB).
+@@ -27,6 +34,9 @@
+ .B \-l
+ Transform by device-link profile.
+ .TP
++.BI \-m\  NUM
++SoftProof intent (0,1,2,3) [defaults to 0].
++.TP
+ .B \-n
+ Terse output, intended for pipe usage.
+ .TP
+@@ -34,11 +44,28 @@
+ .p
+ Output profile (defaults to sRGB).
+ .TP
+-.B \-t <0,1,2,3>
+-Intent (0=Perceptual, 1=Colorimetric, 2=Saturation, 3=Absolute).
++.B \-q
++Quantize CGATS to 8 bits.
++.TP
++.BI \-t\ NUM
++Rendering intent
++.nf
++.RS
++0=Perceptual [default]
++1=Relative colorimetric
++2=Saturation
++3=Absolute colorimetric
++10=Perceptual preserving black ink
++11=Relative colorimetric preserving black ink
++12=Saturation preserving black ink
++13=Perceptual preserving black plane
++14=Relative colorimetric preserving black plane
++15=Saturation preserving black plane
++.RE
++.fi
+ .TP
+-.B \-v
+-Verbose.
++.BI \-v\  verbosity
++Verbosity level, (0=None, 1=Normal, 2=High, 3=Very High) [defaults to 1].
+ .TP
+ .B \-w
+ Use 16 bits.
+@@ -51,11 +78,10 @@
+ For suggestions, comments, bug reports etc. send mail to
+ info@littlecms.com.
+ .SH SEE ALSO
+-.BR jpegicc (1),
+-.BR tifficc (1),
+-.BR icc2ps (1),
+-.BR icclink (1),
+-.BR wtpt (1)
++.BR jpgicc (1),
++.BR linkicc (1),
++.BR psicc (1),
++.BR tificc (1)
+ .SH AUTHOR
+ This manual page was written by Shiju p. Nair <shiju.p@gmail.com>,
+ for the Debian project.

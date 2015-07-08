@@ -1,0 +1,25 @@
+Description: Align access for double value on mips/mipsel
+ This is the patch #2 of the proposed solutions in the Debian bug report.
+Author: Aurelien Jarno <aurel32@debian.org>
+Origin: Debian, https://bugs.debian.org/749975
+Bug: https://github.com/mm2/Little-CMS/issues/32
+Last-Update: 2014-06-05
+---
+This patch header follows DEP-3: http://dep.debian.net/deps/dep3/
+--- a/src/lcms2_internal.h
++++ b/src/lcms2_internal.h
+@@ -479,11 +479,13 @@
+                             const struct _cmsContext_struct* src);
+ 
+ // Container for adaptation state -- not a plug-in
++// The chunks are only guaranteed to be aligned to void *, tell that to the
++// compiler so that it can generate unaligned access instructions if needed.
+ typedef struct {
+     
+     cmsFloat64Number  AdaptationState;
+ 
+-} _cmsAdaptationStateChunkType;
++} _cmsAdaptationStateChunkType __attribute__ ((__aligned__(__alignof__(void *))));
+ 
+ // The global Context0 storage for adaptation state
+ extern  _cmsAdaptationStateChunkType    _cmsAdaptationStateChunk;

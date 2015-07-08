@@ -1,0 +1,122 @@
+Author: Michael Cree <mcree@orcon.net.nz>
+Description: fix alignment issues when casting chars to shorts
+ On alpha, we want our unsigned shorts to be 16-bit aligned; when casting
+ from a char * to an unsigned short *, this is not guaranteed, as the char *
+ may be only 8-bit aligned.  So make the appropriate alignment fix-ups in
+ the relevant functions, fixing a FTBFS on alpha.
+Bug-Debian: http://bugs.debian.org/644473
+
+--- a/src/cmsnamed.c
++++ b/src/cmsnamed.c
+@@ -185,8 +185,19 @@
+     cmsUInt32Number i, len = (cmsUInt32Number) strlen(ASCIIString)+1;
+     wchar_t* WStr;
+     cmsBool  rc;
+-    cmsUInt16Number Lang  = _cmsAdjustEndianess16(*(cmsUInt16Number*) LanguageCode);
+-    cmsUInt16Number Cntry = _cmsAdjustEndianess16(*(cmsUInt16Number*) CountryCode);
++	union {
++		cmsUInt16Number uint16;
++		char str[2];
++	} code_convert;
++	cmsUInt16Number Lang;
++	cmsUInt16Number Cntry;
++
++	code_convert.str[0] = LanguageCode[0];
++	code_convert.str[1] = LanguageCode[1];
++    Lang  = _cmsAdjustEndianess16(code_convert.uint16);
++	code_convert.str[0] = CountryCode[0];
++	code_convert.str[1] = CountryCode[1];
++    Cntry = _cmsAdjustEndianess16(code_convert.uint16);
+ 
+     if (mlu == NULL) return FALSE;
+ 
+@@ -220,9 +231,20 @@
+ // Add a wide entry
+ cmsBool  CMSEXPORT cmsMLUsetWide(cmsMLU* mlu, const char Language[3], const char Country[3], const wchar_t* WideString)
+ {
+-    cmsUInt16Number Lang  = _cmsAdjustEndianess16(*(cmsUInt16Number*) Language);
+-    cmsUInt16Number Cntry = _cmsAdjustEndianess16(*(cmsUInt16Number*) Country);
+     cmsUInt32Number len;
++	union {
++		cmsUInt16Number uint16;
++		char str[2];
++	} code_convert;
++	cmsUInt16Number Lang;
++	cmsUInt16Number Cntry;
++
++	code_convert.str[0] = Language[0];
++	code_convert.str[1] = Language[1];
++    Lang  = _cmsAdjustEndianess16(code_convert.uint16);
++	code_convert.str[0] = Country[0];
++	code_convert.str[1] = Country[1];
++    Cntry = _cmsAdjustEndianess16(code_convert.uint16);
+ 
+     if (mlu == NULL) return FALSE;
+     if (WideString == NULL) return FALSE;
+@@ -350,8 +372,19 @@
+     cmsUInt32Number  StrLen = 0;
+     cmsUInt32Number ASCIIlen, i;
+ 
+-    cmsUInt16Number Lang  = _cmsAdjustEndianess16(*(cmsUInt16Number*) LanguageCode);
+-    cmsUInt16Number Cntry = _cmsAdjustEndianess16(*(cmsUInt16Number*) CountryCode);
++	union {
++		cmsUInt16Number uint16;
++		char str[2];
++	} code_convert;
++	cmsUInt16Number Lang;
++	cmsUInt16Number Cntry;
++
++	code_convert.str[0] = LanguageCode[0];
++	code_convert.str[1] = LanguageCode[1];
++    Lang  = _cmsAdjustEndianess16(code_convert.uint16);
++	code_convert.str[0] = CountryCode[0];
++	code_convert.str[1] = CountryCode[1];
++    Cntry = _cmsAdjustEndianess16(code_convert.uint16);
+ 
+     // Sanitize
+     if (mlu == NULL) return 0;
+@@ -394,8 +427,19 @@
+     const wchar_t *Wide;
+     cmsUInt32Number  StrLen = 0;
+ 
+-    cmsUInt16Number Lang  = _cmsAdjustEndianess16(*(cmsUInt16Number*) LanguageCode);
+-    cmsUInt16Number Cntry = _cmsAdjustEndianess16(*(cmsUInt16Number*) CountryCode);
++	union {
++		cmsUInt16Number uint16;
++		char str[2];
++	} code_convert;
++	cmsUInt16Number Lang;
++	cmsUInt16Number Cntry;
++
++	code_convert.str[0] = LanguageCode[0];
++	code_convert.str[1] = LanguageCode[1];
++    Lang  = _cmsAdjustEndianess16(code_convert.uint16);
++	code_convert.str[0] = CountryCode[0];
++	code_convert.str[1] = CountryCode[1];
++    Cntry = _cmsAdjustEndianess16(code_convert.uint16);
+ 
+     // Sanitize
+     if (mlu == NULL) return 0;
+@@ -426,10 +470,19 @@
+                                               char ObtainedLanguage[3], char ObtainedCountry[3])
+ {
+     const wchar_t *Wide;
++	cmsUInt16Number ObtLang, ObtCode; 
+ 
+-    cmsUInt16Number Lang  = _cmsAdjustEndianess16(*(cmsUInt16Number*) LanguageCode);
+-    cmsUInt16Number Cntry = _cmsAdjustEndianess16(*(cmsUInt16Number*) CountryCode);
+-    cmsUInt16Number ObtLang, ObtCode;
++	union {
++		cmsUInt16Number uint16;
++		char str[3];
++	} code_convert;
++	cmsUInt16Number Lang;
++	cmsUInt16Number Cntry;
++
++	strcpy(code_convert.str, LanguageCode);
++    Lang  = _cmsAdjustEndianess16(code_convert.uint16);
++	strcpy(code_convert.str, CountryCode);
++    Cntry = _cmsAdjustEndianess16(code_convert.uint16);
+ 
+     // Sanitize
+     if (mlu == NULL) return FALSE;

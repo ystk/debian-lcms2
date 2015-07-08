@@ -1,0 +1,130 @@
+lcms2 (2.6-3) unstable; urgency=medium
+
+  * New patch: endianness-verification-fix-powerpc.patch.
+    Thanks to "Fernando Seiti Furusato" <ferseiti@br.ibm.com>
+    (Closes: #750686)
+
+ -- Thomas Weber <tweber@debian.org>  Mon, 16 Jun 2014 17:14:13 +0200
+
+lcms2 (2.6-2) unstable; urgency=medium
+
+  * New patch: fix-unaligned-access.patch: Align access to double values.
+    Thanks to Aurelien Jarno <aurel32@debian.org> (Closes: #749975)
+
+ -- Thomas Weber <tweber@debian.org>  Thu, 05 Jun 2014 14:51:56 +0000
+
+lcms2 (2.6-1) unstable; urgency=medium
+
+  * Imported Upstream version 2.6
+    + Drop patch fix-memory-write-bug.patch (applied upstream)
+    + Update symbols file for 2.6 release
+  * Include up-to-date source files for documentation
+  * Remove quilt from Build-Depends:
+    Thanks to Mathieu Malaterre (Closes: #741435)
+  * Update package description
+  * Update manpages (Closes: #742587)
+  * Update libtool by using dh-autoreconf.
+    Thanks to "Breno Leitao" <brenohl@br.ibm.com> (Closes: 745748)
+  * new patch: prepare-for-libtoolizing.patch, needed for libtool update
+  * Sanity check profile versions (CVE-2014-0459) (Closes: #745471)
+
+ -- Thomas Weber <tweber@debian.org>  Fri, 25 Apr 2014 14:53:42 +0200
+
+lcms2 (2.5-1) unstable; urgency=low
+
+  * Imported Upstream version 2.5 (Closes: #701993, #701971)
+  * Dropped patches (applied upstream):
+    - sparc64-ftbfs
+    - ojdk-8007925+8007926.patch
+    - ojdk-8009654.patch
+    - ojdk-8007929.patch
+    - ojdk-8007927.patch
+  * Refresh patch fix-cmsnamed-alignment-issue.patch
+  * Bump debhelper level to 9
+  * Bump Standards version to 3.9.5, no changes needed
+  * Update Debian copyright
+  * Always update config.sub and config.guess.
+    Thanks to Wookey (Closes: #717839)
+  * Add debug package
+  * Add symbols file from Ubuntu
+  * Update and activate VCS fields in debian/control (Closes: #639607)
+  * Add Thomas Weber as uploader/co-maintainer
+  * New patch: fix-memory-write-bug.patch (LP: 1261840)
+
+ -- Thomas Weber <tweber@debian.org>  Sun, 09 Feb 2014 02:21:26 +0100
+
+lcms2 (2.2+git20110628-2.3) unstable; urgency=low
+
+  * Non-maintainer upload.
+  * debian/patches/sparc64-ftbfs: align blocks according to host
+    requirements.  Thanks to Aurelien Jarno <aurel32@debian.org>.
+    Closes: #647220.
+  * debian/patches/fix-cmsnamed-alignment-issue.patch: fix alignment
+    issues when casting chars to shorts.  Thanks to Michael Cree
+    <mcree@orcon.net.nz>.  Closes: #644473.
+  * Apply security fixes from IcedTea (Closes: #714529, CVE-2013-4160):
+    - debian/patches/ojdk-8007925+8007926.patch: Improve
+      cmsStageAllocLabV2ToV4curves. Improve cmsPipelineDup.
+    - debian/patches/ojdk-8007927.patch: Improve
+      cmsAllocProfileSequenceDescription.
+    - debian/patches/ojdk-8007929.patch: Improve CurvesAlloc.
+    - debian/patches/ojdk-8009654.patch: Improve stability of cmsnamed.
+  * Build-depend on libtiff-dev instead of libtiff4-dev, to facilitate future
+    library transitions.  Thanks to Michael Terry <michael.terry@canonical.com>
+    for the patch.  Closes: #681904.
+  * Fix a typo in the liblcms2-utils package description.  Thanks to
+    Paolo Scarabelli <paolo@msw.it>.  Closes: #640084.
+
+ -- Steve Langasek <vorlon@debian.org>  Sun, 06 Oct 2013 12:38:01 -0700
+
+lcms2 (2.2+git20110628-2.2) unstable; urgency=low
+
+  * Non-maintainer upload.
+  * Enable multi-arch (closes: #667556).
+
+ -- Michael Gilbert <mgilbert@debian.org>  Tue, 22 May 2012 23:57:24 -0400
+
+lcms2 (2.2+git20110628-2.1) unstable; urgency=low
+
+  * Non-maintainer upload.
+  * Fix "FTBFS: dpkg-buildpackage: error: dpkg-source -b lcms2-
+    2.2+git20110628 gave error exit status 2":
+    - drop auto-generated patches
+    - use make distclean in debian/rules' clean target
+    (Closes: #643177)
+  * Don't install the .la file anymore (release goal).
+
+ -- gregor herrmann <gregoa@debian.org>  Tue, 06 Mar 2012 18:46:04 +0100
+
+lcms2 (2.2+git20110628-2) unstable; urgency=low
+
+  * debian/control:
+    - Updated libjpeg dependency for the transition.
+    - Updated package descriptions for better search results.
+
+ -- Oleksandr Moskalenko <malex@debian.org>  Mon, 18 Jul 2011 23:39:39 -0500
+
+lcms2 (2.2+git20110628-1) unstable; urgency=low
+
+  * Upstream git update (Closes: #631598).
+
+ -- Oleksandr Moskalenko <malex@debian.org>  Wed, 29 Jun 2011 01:20:02 -0500
+
+lcms2 (2.2+git20110627-1) unstable; urgency=low
+
+  * Upstream git update to fix a FTBFS on i386.
+
+ -- Oleksandr Moskalenko <malex@debian.org>  Mon, 27 Jun 2011 23:22:54 -0500
+
+lcms2 (2.2-1) unstable; urgency=low
+
+  * New upstream release.
+  * debian/control: Updated standards version to 3.9.2.
+
+ -- Oleksandr Moskalenko <malex@debian.org>  Sun, 12 Jun 2011 00:36:06 -0500
+
+lcms2 (2.1-1) unstable; urgency=low
+
+  * Initial release (Closes: #590222).
+
+ -- Oleksandr Moskalenko <malex@debian.org>  Sun, 23 Jan 2011 15:26:53 -0600
