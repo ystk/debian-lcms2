@@ -1,3 +1,10 @@
+lcms2 (2.6-3+deb8u1) jessie-security; urgency=high
+
+  * Non-maintainer upload by the Security Team.
+  * Added an extra check to MLU bounds (CVE-2016-10165) (Closes: #852627)
+
+ -- Salvatore Bonaccorso <carnil@debian.org>  Fri, 27 Jan 2017 14:26:09 +0100
+
 lcms2 (2.6-3) unstable; urgency=medium
 
   * New patch: endianness-verification-fix-powerpc.patch.
