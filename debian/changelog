@@ -1,3 +1,11 @@
+lcms2 (2.6-3+deb8u2) jessie-security; urgency=high
+
+  * CVE-2018-16435: Fix an integer overflow vulnerability which could lead to a
+    heap-based buffer overflow via a specially-crafted input file.
+    (Closes: #907983)
+
+ -- Chris Lamb <lamby@debian.org>  Thu, 06 Sep 2018 10:10:29 +0100
+
 lcms2 (2.6-3+deb8u1) jessie-security; urgency=high
 
   * Non-maintainer upload by the Security Team.
